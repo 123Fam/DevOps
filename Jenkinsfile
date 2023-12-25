@@ -5,7 +5,7 @@ pipeline {
     stage('Build') {
       steps {
         sh 'docker build -t fatimaali563/terminal .'
-        sh 'docker tag fatimaali563/terminal $DOCKER_BFLASK_IMAGE'
+        sh 'docker tag latest $DOCKER_BFLASK_IMAGE'
       }
     }
     stage('Test') {
