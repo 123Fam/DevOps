@@ -9,6 +9,21 @@ COPY requirements.txt ./
 
 # Install any dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+FROM python:3.9-alpine
+
+WORKDIR /flask_app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN pip install pytest
+
+COPY app/ .
+
+COPY tests/ app/tests/
+
+CMD [ "python", "app.py" ]
 
 # Copy the content of the local src directory to the working directory
 COPY . .
@@ -18,3 +33,4 @@ EXPOSE 8000
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
+
