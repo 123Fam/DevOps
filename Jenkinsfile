@@ -1,27 +1,18 @@
 pipeline {
     agent any
 
-    environment {
-       
-        DOCKER_IMAGE = "fatimaali563/Personal-portfolio"
-        DOCKER_TAG = "${env.BUILD_ID}"
-    }
-
     stages {
         stage('Build') {
             steps {
                 script {
-                    
-                    dockerImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    dockerImage = docker.build("tooba009/tooba-Portfolio:${env.BUILD_ID}")
                 }
             }
         }
-
         stage('Push') {
             steps {
                 script {
-                  
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-credentials') {
                         dockerImage.push()
                     }
                 }
@@ -30,7 +21,6 @@ pipeline {
 
         stage('Test') {
             steps {
-                
                 sh 'ls -l index.html' 
             }
         }
@@ -38,27 +28,23 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                 
                     sshPublisher(
                         publishers: [
                             sshPublisherDesc(
-                                configName: "assignment4",
+                                configName: "assignment4", 
                                 transfers: [sshTransfer(
                                     execCommand: """
-                                        docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
-                                        docker stop personal-portfolio-container || true
-                                        docker rm personal-portfolio-container || true
-                                        docker run -d --name personal-portfolio-container -p 80:80 ${DOCKER_IMAGE}:${DOCKER_TAG}
+                                        docker pull tooba009/tooba-portfolio:${env.BUILD_ID}
+                                        docker stop tooba-portfolio-container || true
+                                        docker rm tooba-portfolio-container || true
+                                        docker run -d --name tooba-portfolio-container -p 80:80 tooba009/tooba-portfolio:${env.BUILD_ID}
                                     """
                                 )]
                             )
                         ]
                     )
-                }
-            }
-        }
-    }
 
+                    
     post {
         failure {
             mail(
