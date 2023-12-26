@@ -35,7 +35,7 @@ pipeline {
                                 transfers: [sshTransfer(
                                     execCommand: """
                                         docker pull fatimaali563/tooba-portfolio:${env.BUILD_ID}
-                                        docker stop fatimaali563-portfolio-container || true
+                                        docker stop tooba-portfolio-container || true
                                         docker rm tooba-portfolio-container || true
                                         docker run -d --name tooba-portfolio-container -p 80:80 fatimaali563/tooba-portfolio:${env.BUILD_ID}
                                     """
@@ -52,6 +52,10 @@ pipeline {
                 subject: "Failed Pipeline: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: "Something is wrong with the build ${env.BUILD_URL}"
             )
+        }
+    }
+}
+            }
         }
     }
 }
