@@ -3,7 +3,7 @@ pipeline {
 
     environment {
        
-        DOCKER_IMAGE = "fatimaali563/personal-portfolio"
+        DOCKER_IMAGE = "fatimaali563/Personal-portfolio"
         DOCKER_TAG = "${env.BUILD_ID}"
     }
 
