@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    dockerImage = docker.build("tooba009/tooba-portfolio:${env.BUILD_ID}")
+                    dockerImage = docker.build("fatimaali563/tooba-portfolio:${env.BUILD_ID}")
                 }
             }
         }
@@ -34,10 +34,10 @@ pipeline {
                                 configName: "assignment4", 
                                 transfers: [sshTransfer(
                                     execCommand: """
-                                        docker pull tooba009/tooba-portfolio:${env.BUILD_ID}
-                                        docker stop tooba-portfolio-container || true
+                                        docker pull fatimaali563/tooba-portfolio:${env.BUILD_ID}
+                                        docker stop fatimaali563-portfolio-container || true
                                         docker rm tooba-portfolio-container || true
-                                        docker run -d --name tooba-portfolio-container -p 80:80 tooba009/tooba-portfolio:${env.BUILD_ID}
+                                        docker run -d --name tooba-portfolio-container -p 80:80 fatimaali563/tooba-portfolio:${env.BUILD_ID}
                                     """
                                 )]
                             )
@@ -48,7 +48,7 @@ pipeline {
     post {
         failure {
             mail(
-                to: 'tooba832456@gmail.com',
+                to: 'sp20-bcs-002@cuiatk.edu.pk',
                 subject: "Failed Pipeline: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: "Something is wrong with the build ${env.BUILD_URL}"
             )
