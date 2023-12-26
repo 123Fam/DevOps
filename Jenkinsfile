@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    dockerImage = docker.build("tooba009/tooba-Portfolio:${env.BUILD_ID}")
+                    dockerImage = docker.build("tooba009/tooba-portfolio:${env.BUILD_ID}")
                 }
             }
         }
