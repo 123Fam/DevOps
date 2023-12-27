@@ -1,18 +1,27 @@
 pipeline {
     agent any
 
+    environment {
+       
+        DOCKER_IMAGE = "fatimaali563/personal-portfolio"
+        DOCKER_TAG = "${env.BUILD_ID}"
+    }
+
     stages {
         stage('Build') {
             steps {
                 script {
-                    dockerImage = docker.build("fatimaali563/tooba-portfolio:${env.BUILD_ID}")
+                    
+                    dockerImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                 }
             }
         }
+
         stage('Push') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-credentials') {
+                  
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         dockerImage.push()
                     }
                 }
@@ -21,6 +30,7 @@ pipeline {
 
         stage('Test') {
             steps {
+                
                 sh 'ls -l index.html' 
             }
         }
@@ -28,23 +38,27 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                 
                     sshPublisher(
                         publishers: [
                             sshPublisherDesc(
-                                configName: "assignment4", 
+                                configName: "assignment4",
                                 transfers: [sshTransfer(
                                     execCommand: """
-                                        docker pull fatimaali563/tooba-portfolio:${env.BUILD_ID}
-                                        docker stop tooba-portfolio-container || true
-                                        docker rm tooba-portfolio-container || true
-                                        docker run -d --name tooba-portfolio-container -p 80:80 fatimaali563/tooba-portfolio:${env.BUILD_ID}
+                                        docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
+                                        docker stop personal-portfolio-container || true
+                                        docker rm personal-portfolio-container || true
+                                        docker run -d --name personal-portfolio-container -p 80:80 ${DOCKER_IMAGE}:${DOCKER_TAG}
                                     """
                                 )]
                             )
                         ]
                     )
+                }
+            }
+        }
+    }
 
-                    
     post {
         failure {
             mail(
@@ -52,10 +66,6 @@ pipeline {
                 subject: "Failed Pipeline: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: "Something is wrong with the build ${env.BUILD_URL}"
             )
-        }
-    }
-}
-            }
         }
     }
 }
