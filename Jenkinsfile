@@ -42,7 +42,6 @@ pipeline {
                     sshPublisher(
                         publishers: [
                             sshPublisherDesc(
-                                configName: "assignment4",
                                 transfers: [sshTransfer(
                                     execCommand: """
                                         docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
